@@ -1,4 +1,5 @@
 const mysql = require('mysql2/promise');
+<<<<<<< HEAD
 require('dotenv').config();
 
 const pool = mysql.createPool({
@@ -43,3 +44,20 @@ module.exports = pool;
 // connectDB();
 
 // module.exports = connectDB;
+=======
+const { db } = require('./env');
+
+// Pool de conexiones reutilizables (mejor que abrir/cerrar por peticion)
+const pool = mysql.createPool({
+  host: db.host,
+  port: db.port,
+  user: db.user,
+  password: db.password,
+  database: db.database,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
+module.exports = pool;
+>>>>>>> desarrollo

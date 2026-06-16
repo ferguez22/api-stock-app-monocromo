@@ -1,86 +1,61 @@
-# API de Control de Inventario
+# api-phonecity-app
 
-## Descripción
+API REST de gestion para PhoneCity (tienda de reparacion de moviles).
+Stack: Node.js + Express 5 + MariaDB (mysql2).
 
-Esta API está diseñada para gestionar el control de inventario de productos, manejando la autenticación de usuarios, el registro de productos y los movimientos de stock. Está construida para trabajar con MongoDB como base de datos e integrarse con una aplicación frontend hecha en Angular.
+## Arquitectura
 
-## Funcionalidades
+Modular por feature, con 4 capas por modulo:
 
-- Gestión de Usuarios
-  - Usuarios regulares
-  - Usuarios administradores
-  - Autenticación y autorización
-- Gestión de Productos
-  - Registro de productos
-  - Seguimiento de inventario
-  - Gestión de categorías
-- Movimientos de Stock
-  - Productos entrantes
-  - Productos salientes
-  - Seguimiento de productos perdidos/extraviados
-- Sistema de Reportes
-  - Niveles de stock
-  - Historial de movimientos
-  - Configuración de alertas
+| Capa | Responsabilidad |
+|---|---|
+| `routes` | Mapea URL -> controller |
+| `controller` | Traduce HTTP <-> service (sin logica ni SQL) |
+| `service` | Reglas de negocio + validacion |
+| `repository` | Solo acceso a datos (SQL) |
 
-## Tecnologías
+```
+src/
+├── config/      env (validado) + pool de BBDD
+├── modules/     una carpeta por feature (linea, ...)
+├── middlewares/ errorHandler, notFound
+├── utils/       AppError, asyncHandler
+├── app.js       construye la app express
+└── server.js    arranca el servidor
+```
 
-- Node.js
-- Express.js
-- MongoDB
-- Autenticación con JWT
-- Arquitectura REST API
-
-## Requisitos Previos
-
-- Node.js instalado
-- MongoDB instalado y en ejecución
-- Gestor de paquetes npm o yarn
-
-## Instalación
+## Puesta en marcha
 
 ```bash
 npm install
-npm run dev
+cp .env.example .env   # rellena DB_PASSWORD
+npm run dev            # nodemon (recarga en caliente)
 ```
 
-## Endpoints de la API
+## Scripts
 
-### Autenticación
+| Comando | Accion |
+|---|---|
+| `npm start` | Produccion (node) |
+| `npm run dev` | Desarrollo (nodemon) |
+| `npm run lint` | ESLint |
+| `npm run format` | Prettier |
 
-- POST /api/auth/register
-- POST /api/auth/login
+## Endpoints (v0.3)
 
-### Productos
+| Metodo | Ruta | Accion |
+|---|---|---|
+| GET | `/api/health` | Estado de la API |
+| GET | `/api/lineas` | Listar lineas |
+| GET | `/api/lineas/:id` | Una linea |
+| POST | `/api/lineas` | Crear |
+| PUT | `/api/lineas/:id` | Editar |
+| DELETE | `/api/lineas/:id` | Borrar |
 
-- GET /api/products
-- POST /api/products
-- PUT /api/products/:id
-- DELETE /api/products/:id
+## Formato de respuesta
 
-### Inventario
+Consistente en toda la API:
 
-- POST /api/stock/in
-- POST /api/stock/out
-- POST /api/stock/missing
-- GET /api/stock/history
-
-### Usuarios
-
-- GET /api/users
-- PUT /api/users/:id
-- DELETE /api/users/:id
-
-## Variables de Entorno
-
-PORT=3000
-MONGODB_URI=mongodb://localhost/stockapp
-JWT_SECRET=tu_clave_jwt
-
-## Integración con Frontend
-
-Esta API está diseñada para trabajar con una aplicación frontend en Angular. Consulta el repositorio del frontend para más detalles.
-
-## Licencia
-
-MIT
+```json
+{ "success": true, "data": {}, "error": null }
+```
